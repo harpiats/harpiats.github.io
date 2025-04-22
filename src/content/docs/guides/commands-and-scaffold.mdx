@@ -1,0 +1,333 @@
+---
+title: Commands and Scaffold
+description: A guide in my new Starlight docs site.
+---
+
+import { FileTree } from '@astrojs/starlight/components';
+
+The Harpia Framework provides a set of commands to streamline development. These commands are defined in the `package.json` file:
+
+| Command   | Description                                                                 |
+|-----------|-----------------------------------------------------------------------------|
+| `start`   | Starts the application.                                                     |
+| `dev`     | Starts the application in development mode with hot-reloading.              |
+| `tests`   | Runs tests for a specific module or directory (e.g., `user/store`).         |
+| `g`       | Generates modules, files, and other scaffolding components.                 |
+| `studio`  | Starts Prisma Studio for database management.                               |
+| `seed`    | Runs database seed scripts.                                                 |
+| `migrate` | Generates prisma client types and applies all pending database migrations.  |
+
+## Scaffold
+The Harpia Framework includes a powerful scaffolding system to help you generate commonly used application components with ease. This tool accelerates development and enforces a consistent structure across your codebase.
+
+You can invoke the scaffolding tool using the following command:
+
+```bash
+bun g
+```
+
+Upon execution, you'll be prompted to select what you want to generate:
+
+```bash
+? What do you want to forge? (Use arrow keys)
+❯ Module
+  Test
+  Factory
+  Seed
+  Task
+  Validation
+  Observer
+```
+
+### Module
+The `Module` option scaffolds a complete directory structure for a new feature or resource in your application. A typical module includes controllers, views, services, tests, and more, organized as follows:
+
+<FileTree>
+- your-module-name
+  - controllers
+    - index.ts
+    - Create.ts
+    - Delete.ts
+    - Edit.ts
+    - List.ts
+    - Show.ts
+    - Store.ts
+    - Update.ts
+  - pages
+    - create
+      - page.html
+    - edit
+      - page.html
+    - list
+      - page.html
+    - show
+      - page.html
+  - repositories
+    - index.ts
+    - Create.ts
+    - Delete.ts
+    - List.ts
+    - Show.ts
+    - Update.ts
+  - services
+    - index.ts
+    - Create.ts
+    - Delete.ts
+    - List.ts
+    - Show.ts
+    - Update.ts
+  - tests
+    - .gitignore
+  - validations
+      - index.ts
+      - Create.ts
+      - Update.ts
+  - **your-module-name.routes.ts**
+</FileTree>
+
+> 🛠️ Note: The pages/ directory is only generated if the application is running in MODE=fullstack. If the mode is set to MODE=api, the pages/ directory will not be included.
+
+This layout promotes modular development, making your application easier to scale and maintain by clearly separating responsibilities.
+
+### Test
+
+Harpia lets you scaffold ready-to-use test files with just one command:
+
+```bash
+bun g
+```
+
+Choose the `Test` option, then specify the module and test name.  
+Example:
+
+```bash
+✔ What do you want to forge? Test
+✔ Module name: user
+✔ Test name: store
+```
+
+This creates a new file at:  
+`modules/user/tests/store.spec.ts`
+
+Each test file comes pre-configured with `bun:test` and the `TestClient` utility to help you get started quickly.
+
+> 🔗 **Learn more:** [Test Documentation](/guides/test)
+
+
+### Factory
+
+The `Factory` option scaffolds a factory class used to generate seed data for your models.  
+To create a new factory, run the command:
+
+```bash
+bun g
+```
+
+Then choose the `Factory` option:
+
+```bash
+? What do you want to forge? (Use arrow keys)
+  Module
+  Test
+❯ Factory
+  Seed
+  Task
+  Validation
+  Observer
+```
+
+You’ll be prompted to enter a factory name, typically matching the model it’s for:
+
+```bash
+✔ What do you want to forge? Factory  
+✔ Factory name (use a model name): user
+```
+
+This will generate a new file at:  
+`app/database/factories/User.ts`
+
+The generated file comes with a base structure like this:
+
+```ts
+import { Factory } from "app/helpers/Factory";
+import { User } from "..";
+
+export default new Factory().define(User, (faker) => {
+  return {
+    /**
+     * Define your model fields here using faker.js.
+     * 
+     * Example:
+     * name: faker.person.fullName(),
+     */
+  };
+});
+```
+
+Factories include five core methods:
+
+- `.create()` – Creates and persists one record to the database.
+- `.createMany(count)` – Creates and persists multiple records.
+- `.makeStubbed()` – Generates one record's data without saving it.
+- `.makeStubbedMany(count)` – Generates multiple records’ data without saving.
+- `.merge(data)` – Merges custom fields with generated data (works with all other methods).
+
+Here’s an example of how to use a factory:
+
+```ts
+import UserFactory from "app/database/factories/User";
+
+await UserFactory.create();
+await UserFactory.createMany(2);
+
+const user = await UserFactory.makeStubbed();
+const users = await UserFactory.makeStubbedMany(5);
+
+await UserFactory.merge({ name: "John Doe" }).create();
+const customUser = await UserFactory.merge({ name: "John Doe" }).makeStubbed();
+```
+
+> 💡 You can use factories in your [tests](/guides/tests) and [seeders](/guides/seeders) to generate reliable and consistent mock data during development.
+
+### Seed
+
+Seeding is the process of populating your database with initial data — useful for development, testing, or simply bootstrapping your application with some default content.  
+Harpia provides a powerful and flexible seeding system that integrates seamlessly with factories, allowing you to generate realistic data with ease.
+
+You can generate seed files using the `bun g` command, or create them manually for full control over the data flow.
+
+> 📖 Check out the [full seeding guide](/guides/seeding) to learn how to create, run, and structure your seed files effectively.
+
+### Tasks and Jobs
+
+Harpia supports background processing and scheduled tasks using the powerful [`cron`](https://www.npmjs.com/package/cron) library. Tasks are placed in the `app/tasks` directory and can be easily scaffolded using the `bun g` command.
+
+Each task is a `CronJob` instance and runs on a schedule you define — perfect for background processing, database cleanup, notifications, and more.
+
+> 📖 For a complete walkthrough, check the [full guide on Tasks and Jobs](/guides/tasks-and-jobs).
+
+### Validation
+
+Harpia uses the [Zod](https://zod.dev/) library for schema-based validation, providing a powerful and type-safe way to ensure that data conforms to expected formats before processing.
+
+
+##### Scaffolding a Validation
+
+You can generate a custom validation file using the `bun g` command:
+
+```bash
+bun g
+```
+
+Then select the `Validation` option:
+
+```bash
+? What do you want to forge? (Use arrow keys)
+  Module
+  Test
+  Factory
+  Seed
+  Task
+❯ Validation
+  Observer
+
+✔ Module name: user
+✔ Validation name: create
+```
+
+This will generate a new file at:
+
+```
+modules/user/validations/Create.ts
+```
+
+With the following structure:
+
+```ts
+import AppError from "app/helpers/AppError";
+import * as z from "zod";
+
+export const Schema = z.object({
+  // name: z.string().min(1).max(255),
+});
+
+export type SchemaType = z.infer<typeof Schema>;
+
+export async function CreateValidation(data: SchemaType) {
+  try {
+    Schema.parse(data);
+  } catch (error) {
+    if (error instanceof z.ZodError || error instanceof AppError) {
+      throw error;
+    }
+  }
+}
+```
+
+---
+
+##### Default Validators on Module Creation
+
+When generating a new `Module` using `bun g`, Harpia automatically creates two default validation files:
+
+- `Create.ts`
+- `Update.ts`
+
+These files are located in:
+
+```
+modules/[module]/validations/
+```
+
+They are also automatically exported through the module’s `index.ts` file:
+
+```ts
+import { CreateValidation } from "./Create";
+import { UpdateValidation } from "./Update";
+
+const UserValidator = {
+  Create: CreateValidation,
+  Update: UpdateValidation,
+};
+
+export default UserValidator;
+```
+
+This structure makes it easy to reuse validation logic consistently across your controllers or services.
+
+---
+
+> 💡 **Tip:** You can enhance your validations using Zod features like `.refine()`, `.superRefine()`, `.transform()`, or schema composition for advanced use cases.
+
+### Observers
+
+Harpia provides a simple and powerful way to hook into Prisma lifecycle events using **Observers**. These let you react to model-level database operations such as `create`, `update`, `delete`, and more.
+
+Observers live in the `app/observers` directory and are automatically registered when the application boots.
+
+You can scaffold a new observer with:
+
+```bash
+bun g
+```
+
+---
+
+Use observers to:
+
+- Log database activity  
+- Send notifications or emails  
+- Sync data with external APIs or services  
+
+Each observer is defined by attaching a callback to a Prisma operation on a specific model:
+
+```ts
+// app/observers/UserCreate.observer.ts
+import { Observer } from ".";
+
+Observer.model("User", "create", ({ data }) => {
+  console.log("New user created:", data);
+});
+```
+
+> 🔗 **Learn more:** [Observer Documentation](/guides/observers)

@@ -1,0 +1,40 @@
+---
+title: Project Structure
+description: A guide in my new Starlight docs site.
+---
+
+import { FileTree } from '@astrojs/starlight/components';
+
+A typical Harpia project generated with the scaffolding tool will have the following structure:
+
+<FileTree>
+  - my-app
+    - app
+      - commands/
+      - config/
+      - database/
+      - helpers/
+      - middlewares/
+      - observers/
+      - services/
+      - tasks/
+      - utils/
+    - modules
+      - system
+        - controllers/
+        - services/
+        - tests/
+        - system.routes.ts
+      - user
+        - controllers/
+        - pages/
+        - repositories/
+        - services/
+        - tests/
+        - validations/
+        - **user.routes.ts**        
+    - start/
+    - .env
+    - cmd.ts
+    - package.json
+</FileTree>

@@ -1,0 +1,158 @@
+---
+title: Modules
+description: A guide in my new Starlight docs site.
+---
+
+import { FileTree } from '@astrojs/starlight/components';
+
+The Harpia Framework comes with a powerful scaffolding system that helps you generate common application components quickly and consistently.
+
+To run the generator, use:
+
+```bash
+bun g
+```
+
+You’ll be prompted with a menu like this:
+
+```bash
+? What do you want to forge? (Use arrow keys)
+❯ Module
+  Test
+  Factory
+  Seed
+  Task
+  Validation
+  Observer
+```
+
+Choosing the `Module` option will generate a complete folder structure for a new resource or feature in your app:
+
+<FileTree>
+  - your-module-name
+    - controllers/
+    - pages/
+    - repositories/
+    - services/
+    - tests/
+    - validations/
+</FileTree>
+
+> 💡 **Note:** The `pages/` directory is only created when your app is running in `MODE=fullstack`. If `MODE=api` is set, that folder will be skipped.
+
+
+## File Structure Overview
+
+### Route
+
+The generated route file maps HTTP methods to controller functions:
+
+```ts
+import { Router } from "harpiats";
+import { UserController } from "./controllers";
+
+export const userRoutes = new Router("/users");
+
+userRoutes.get("/", UserController.List);
+userRoutes.get("/in/:id", UserController.Show);
+userRoutes.get("/create", UserController.Create);
+userRoutes.get("/edit/:id", UserController.Edit);
+userRoutes.post("/", UserController.Store);
+userRoutes.put("/:id", UserController.Update);
+userRoutes.delete("/:id", UserController.Delete);
+```
+
+### Controller
+
+Controllers handle the request/response and delegate logic to the service layer.  
+Example: `modules/your-module-name/controllers/Create.ts`
+
+```ts
+import type { Request, Response } from "harpiats";
+import ApiResponse from "app/helpers/ApiResponse";
+
+export async function Create(request: Request, response: Response) {
+  try {
+    await response.module("user").render("create", { title: "Create User" });
+  } catch (error: any) {
+    return ApiResponse.error(response, error);
+  }
+}
+```
+
+### Service
+
+Services handle business logic and validation.  
+Example: `modules/your-module-name/services/Create.ts`
+
+```ts
+import AppError from "app/helpers/AppError";
+import { Utils } from "app/utils";
+import { UserRepository } from "../repositories";
+import type { SchemaType } from "../validations/Create";
+
+export default async function Create(data: SchemaType) {
+  const query = await UserRepository.Create(data);
+
+  if (!query) throw AppError.E_GENERIC_ERROR("Error trying to save data.");
+
+  const result = Utils.object.omit(query, ["createdAt", "updatedAt"]);
+  return result;
+}
+```
+
+### Validation
+
+Validation is handled using Zod.
+Example: `modules/your-module-name/validations/Create.ts`
+
+```ts
+import AppError from "app/helpers/AppError";
+import * as z from "zod";
+
+export const SchemaCreate = z.object({
+  name: z.string().min(1).max(255),
+});
+
+export type SchemaType = z.infer<typeof SchemaCreate>;
+
+export async function CreateValidation(data: SchemaType) {
+  try {
+    SchemaCreate.parse(data);
+  } catch (error) {
+    if (error instanceof z.ZodError || error instanceof AppError) {
+      throw error;
+    }
+  }
+}
+```
+
+### Repository
+
+Repositories interact with the database using Prisma.  
+Example: `modules/your-module-name/repositories/Create.ts`
+
+```ts
+import { User } from "app/database";
+import type { SchemaType } from "../validations/Create";
+
+export default async function Create(data: SchemaType) {
+  return await User.create({ data });
+}
+```
+
+### Test
+
+Tests live inside the module’s `modules/your-module-name/tests/` directory.  
+You can scaffold them using `bun g` and selecting the `Test` option.
+
+For route tests, use the **Test Client** — check out the `core/test-client` for more details.
+
+### Pages
+
+The `modules/your-module-name/pages/` directory is only generated if the `.env` file has `MODE=fullstack`.
+
+This folder contains `.html` files used as templates for server-side rendering.
+
+By default, Harpia uses its own built-in template engine from **Harpia Core**.  
+To learn more, check out [Harpia Core’s template engine](/core/template-engine).
