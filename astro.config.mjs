@@ -35,6 +35,7 @@ export default defineConfig({
 					{ label: 'Tasks and Jobs', slug: 'guides/tasks-and-jobs' },
 					{ label: 'Utilities', slug: 'guides/utilities' },
 					{ label: 'S3', slug: 'guides/s3' },
+					{ label: 'Homepage', slug: 'guides/homepage' },
 				],
 			},
 			{
