@@ -26,6 +26,24 @@ You can invoke the scaffolding tool using the following command:
 bun g
 ```
 
+Or if you prefer, you can use the shorthand:
+
+```bash
+bun g <type>
+```
+
+Where `<type>` can be one of the following:
+- `module`
+- `controller`
+- `test`
+- `factory`
+- `seed`
+- `task`
+- `validation`
+- `observer`
+
+## Examples
+
 Upon execution, you'll be prompted to select what you want to generate:
 
 ```bash
@@ -38,6 +56,12 @@ Upon execution, you'll be prompted to select what you want to generate:
   Task
   Validation
   Observer
+```
+
+Or you can specify the type directly:
+
+```bash
+bun g module
 ```
 
 ### Module
@@ -233,7 +257,7 @@ Each task is a `CronJob` instance and runs on a schedule you define — perfect 
 Harpia uses the [Zod](https://zod.dev/) library for schema-based validation, providing a powerful and type-safe way to ensure that data conforms to expected formats before processing.
 
 
-##### Scaffolding a Validation
+#### Scaffolding a Validation
 
 You can generate a custom validation file using the `bun g` command:
 
@@ -289,7 +313,7 @@ export async function CreateValidation(data: SchemaType) {
 
 ---
 
-##### Default Validators on Module Creation
+#### Default Validators on Module Creation
 
 When generating a new `Module` using `bun g`, Harpia automatically creates two default validation files:
 
