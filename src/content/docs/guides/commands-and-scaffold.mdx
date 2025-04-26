@@ -31,6 +31,7 @@ Upon execution, you'll be prompted to select what you want to generate:
 ```bash
 ? What do you want to forge? (Use arrow keys)
 ❯ Module
+  Controller
   Test
   Factory
   Seed
@@ -89,6 +90,26 @@ The `Module` option scaffolds a complete directory structure for a new feature o
 
 This layout promotes modular development, making your application easier to scale and maintain by clearly separating responsibilities.
 
+### Controller
+
+Harpia lets you scaffold generic controller files with just one command:
+
+```bash
+bun g controller
+```
+
+Choose the `Test` option, then specify the module and test name.  
+Example:
+
+```bash
+✔ Module name: user
+✔ Controller name: generic
+```
+
+This creates a new file at:  
+`modules/user/controllers/Generic.ts`
+
+
 ### Test
 
 Harpia lets you scaffold ready-to-use test files with just one command:
@@ -128,6 +149,7 @@ Then choose the `Factory` option:
 ```bash
 ? What do you want to forge? (Use arrow keys)
   Module
+  Controller
   Test
 ❯ Factory
   Seed
@@ -224,6 +246,7 @@ Then select the `Validation` option:
 ```bash
 ? What do you want to forge? (Use arrow keys)
   Module
+  Controller
   Test
   Factory
   Seed

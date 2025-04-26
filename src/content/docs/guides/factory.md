@@ -19,6 +19,7 @@ Then select the `Factory` option and provide the model name when prompted:
 ```bash
 ? What do you want to forge? (Use arrow keys)
   Module
+  Controller
   Test
 ❯ Factory
   Seed

@@ -16,6 +16,7 @@ Then, select the `Test` option from the prompt:
 ```bash
 ? What do you want to forge? (Use arrow keys)
   Module
+  Controller
 ❯ Test
   Factory
   Seed
@@ -44,7 +45,7 @@ import { app } from "start/server";
 
 const client = new TestClient(app);
 
-describe("METHOD /store endpoint", () => {
+describe("[METHOD] /users - User endpoint", () => {
   test("describe the test", async () => {
     // const request = await client.get("/").execute();
     // const response = await request.json();
@@ -53,7 +54,11 @@ describe("METHOD /store endpoint", () => {
     // expect(response).toBeObject();
     // expect(response).toEqual(
     //   expect.objectContaining({
-    //     message: expect.any(String),
+    //     status: "OK",
+    //     result: expect.objectContaining({
+    //       // expect properties
+    //     }),
+    //     error: null,
     //   }),
     // );
   });
