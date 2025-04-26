@@ -32,4 +32,3 @@ When using the complete Harpia Framework, you also gain access to:
 - **Model Observers:** React to lifecycle events in your models.
 - **Mailer:** Send emails with integrated support.
 - **Tasks and Cronjobs:** Easily schedule and manage recurring tasks.
-> Harpia is currently in beta, and documentation is available in the README files of each repository. A dedicated documentation site is planned for future releases.
