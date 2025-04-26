@@ -18,23 +18,14 @@ bun migrate
 ```
 
 This runs `prisma migrate dev` and `prisma generate dev` under the hood to keep your database and types in sync.
-
-## Registering Models
-After creating a model, register it in `app/database/index.ts` like this:
+After creating a model in your `schema.prisma`, the system automatically detects all models and updates `app/database/index.ts` for you, making them available with clean and direct access:
 
 ```typescript
-import { PrismaClient } from "@prisma/client";
-import { Observer } from "./observer";
-
-const client = new PrismaClient();
-export const observer = new Observer(client);
-
-export const prisma = observer.prisma;
 export const {
-  user: User
+  user: User,
   post: Post,
-  comment: Comment, // Model
+  comment: Comment,
 } = prisma;
 ```
 
-This lets you access models directly, like `Post.findMany()` or `Comment.create()`, without having to call `prisma.post` or `prisma.comment` every time.
+This allows you to call models directly, such as `Post.findMany()` or `Comment.create()`, without manually using `prisma.post` or `prisma.comment`.
