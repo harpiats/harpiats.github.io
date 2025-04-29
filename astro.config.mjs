@@ -9,6 +9,11 @@ export default defineConfig({
 	site: "https://harpiats.github.io",
 	integrations: [starlight({
 		title: 'Harpia',
+		logo: {
+			dark: './src/assets/logo-dark.svg',
+			light: './src/assets/logo-light.svg',
+			replacesTitle: true,
+		},
 		social: [
 			{ icon: 'github', label: 'GitHub', href: 'https://github.com/harpiats' },
 		],
@@ -36,6 +41,7 @@ export default defineConfig({
 					{ label: 'Utilities', slug: 'guides/utilities' },
 					{ label: 'S3', slug: 'guides/s3' },
 					{ label: 'Homepage', slug: 'guides/homepage' },
+					{ label: 'Authentication', slug: 'guides/authentication' },
 				],
 			},
 			{
