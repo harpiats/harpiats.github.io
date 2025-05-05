@@ -4,7 +4,7 @@ description: Current development progress and future plans
 ---
 
 ## Current Version
-**v1.0.0-beta.4** - Beta testing phase
+**v1.0.0-beta.8** - Beta testing phase
 
 ## Current Focus
 
@@ -19,19 +19,15 @@ We're building a comprehensive test suite to ensure framework stability:
 - Measuring startup time improvements
 - Analyzing memory usage patterns
 
-## Next Major Goal: Runtime Adapter
-
-After stable v1.0 release, we'll focus on runtime flexibility:
-
-**Key aspects:**
-- Abstract server creation to support multiple runtimes
-- Maintain Bun as default optimized runtime
-- Node.js compatibility will require:
-  - Node's native http module adaptation
-  - Compatibility layer for Bun-specific features
-  - Code transpilation to JavaScript for production use
-
 ## Future Plans
+
+### New Features
+- CSRF Protection
+- Bearer Authentication
+- JWT
+- IP Restriction
+- Rate Limiting
+- Brute-force Protection
 
 ### Developer Experience
 - Enhanced error messages
@@ -42,7 +38,6 @@ After stable v1.0 release, we'll focus on runtime flexibility:
 We welcome help with:
 - Test case development
 - Documentation improvements
-- Compatibility research
 
 ```bash
 # Contribute to the project:
