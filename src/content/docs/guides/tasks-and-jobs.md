@@ -13,17 +13,17 @@ bun g
 
 Each task is defined in its own file as a CronJob instance. Here's an example of a task that runs every minute:
 
-**app/tasks/FirstTask.ts**
+**app/tasks/first-task.ts**
 ```typescript
 import { CronJob } from "cron";
 
-function Task() {
+function task() {
   console.log("Task executed at:", new Date().toISOString());
 }
 
-export const FirstTask = new CronJob(
+export const firstTask = new CronJob(
   "* * * * *", // every minute
-  Task,
+  task,
   null,
   false, // don't start automatically
   "UTC"
@@ -34,13 +34,13 @@ To register and start your tasks, use the TaskManager class defined in `app/task
 
 ```typescript
 import type { CronJob } from "cron";
-import { FirstTask } from "./FirstTask";
+import { firstTask } from "./first-task";
 
 class TaskManager {
   private jobs: CronJob[];
 
   constructor() {
-    this.jobs = [FirstTask];
+    this.jobs = [firstTask];
   }
 
   public run() {

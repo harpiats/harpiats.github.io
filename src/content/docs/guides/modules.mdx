@@ -50,29 +50,29 @@ The generated route file maps HTTP methods to controller functions:
 
 ```ts
 import { Router } from "harpiats";
-import { UserController } from "./controllers";
+import { controller } from "./controllers";
 
 export const userRoutes = new Router("/users");
 
-userRoutes.get("/", UserController.List);
-userRoutes.get("/in/:id", UserController.Show);
-userRoutes.get("/create", UserController.Create);
-userRoutes.get("/edit/:id", UserController.Edit);
-userRoutes.post("/", UserController.Store);
-userRoutes.put("/:id", UserController.Update);
-userRoutes.delete("/:id", UserController.Delete);
+userRoutes.get("/", controller.list);
+userRoutes.get("/in/:id", controller.show);
+userRoutes.get("/create", controller.create);
+userRoutes.get("/edit/:id", controller.edit);
+userRoutes.post("/", controller.store);
+userRoutes.put("/:id", controller.update);
+userRoutes.delete("/:id", controller.delete);
 ```
 
 ### Controller
 
 Controllers handle the request/response and delegate logic to the service layer.  
-Example: `modules/your-module-name/controllers/Create.ts`
+Example: `modules/your-module-name/controllers/create.ts`
 
 ```ts
 import type { Request, Response } from "harpiats";
 import ApiResponse from "app/helpers/ApiResponse";
 
-export async function Create(request: Request, response: Response) {
+export async function create(request: Request, response: Response) {
   try {
     await response.module("user").render("create", { title: "Create User" });
   } catch (error: any) {
@@ -84,16 +84,16 @@ export async function Create(request: Request, response: Response) {
 ### Service
 
 Services handle business logic and validation.  
-Example: `modules/your-module-name/services/Create.ts`
+Example: `modules/your-module-name/services/create.ts`
 
 ```ts
 import AppError from "app/helpers/AppError";
 import { Utils } from "app/utils";
-import { UserRepository } from "../repositories";
+import { repository } from "../repositories";
 import type { SchemaType } from "../validations/Create";
 
-export default async function Create(data: SchemaType) {
-  const query = await UserRepository.Create(data);
+export async function create(data: SchemaType) {
+  const query = await repository.create(data);
 
   if (!query) throw AppError.E_GENERIC_ERROR("Error trying to save data.");
 
@@ -105,7 +105,7 @@ export default async function Create(data: SchemaType) {
 ### Validation
 
 Validation is handled using Zod.
-Example: `modules/your-module-name/validations/Create.ts`
+Example: `modules/your-module-name/validations/create.ts`
 
 ```ts
 import AppError from "app/helpers/AppError";
@@ -117,13 +117,15 @@ export const SchemaCreate = z.object({
 
 export type SchemaType = z.infer<typeof SchemaCreate>;
 
-export async function CreateValidation(data: SchemaType) {
+export async function create(data: SchemaType) {
   try {
     SchemaCreate.parse(data);
   } catch (error) {
     if (error instanceof z.ZodError || error instanceof AppError) {
       throw error;
     }
+
+    throw AppError.E_GENERIC_ERROR("Unexpected error during validation.");
   }
 }
 ```
@@ -131,13 +133,13 @@ export async function CreateValidation(data: SchemaType) {
 ### Repository
 
 Repositories interact with the database using Prisma.  
-Example: `modules/your-module-name/repositories/Create.ts`
+Example: `modules/your-module-name/repositories/create.ts`
 
 ```ts
 import { User } from "app/database";
 import type { SchemaType } from "../validations/Create";
 
-export default async function Create(data: SchemaType) {
+export async function create(data: SchemaType) {
   return await User.create({ data });
 }
 ```

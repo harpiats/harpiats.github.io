@@ -31,14 +31,14 @@ Then select the `Factory` option and provide the model name when prompted:
 ✔ Factory name (Use a model name): user
 ```
 
-This will create a pre-configured seed file at `app/database/factories/UserFactory.ts`.
+This will create a pre-configured seed file at `app/database/factories/user.factory.ts`.
 
 ### Defining a Factory
 
 You define a factory by passing a model and a function that returns fake attributes.
 
 ```ts
-// app/database/factories/UserFactory.ts
+// app/database/factories/user.factory.ts
 import { Factory } from "app/helpers/Factory";
 import { User } from "..";
 
@@ -60,7 +60,7 @@ export { UserFactory };
 You can merge static or dynamic attributes, create single or multiple records, or return stubbed data without saving to the database.
 
 ```ts
-import { UserFactory } from "app/database/factories/UserFactory";
+import { UserFactory } from "app/database/factories/user.factory";
 
 const user = await UserFactory
   .merge({ role: "ADMIN" })
@@ -89,8 +89,8 @@ const fakeUsers = await UserFactory.makeStubbedMany(5);
 ### Example with Relationships
 
 ```ts
-import { PostFactory } from "app/database/factories/PostFactory";
-import { UserFactory } from "app/database/factories/UserFactory";
+import { PostFactory } from "app/database/factories/post.factory";
+import { UserFactory } from "app/database/factories/user;factory";
 
 export async function run() {
   const author = await UserFactory.merge({ role: "AUTHOR" }).create();

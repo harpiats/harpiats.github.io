@@ -71,13 +71,13 @@ The `Module` option scaffolds a complete directory structure for a new feature o
 - your-module-name
   - controllers
     - index.ts
-    - Create.ts
-    - Delete.ts
-    - Edit.ts
-    - List.ts
-    - Show.ts
-    - Store.ts
-    - Update.ts
+    - create.ts
+    - destroy.ts
+    - edit.ts
+    - list.ts
+    - show.ts
+    - store.ts
+    - update.ts
   - pages
     - create
       - page.html
@@ -89,24 +89,24 @@ The `Module` option scaffolds a complete directory structure for a new feature o
       - page.html
   - repositories
     - index.ts
-    - Create.ts
-    - Delete.ts
-    - List.ts
-    - Show.ts
-    - Update.ts
+    - create.ts
+    - destroy.ts
+    - list.ts
+    - show.ts
+    - update.ts
   - services
     - index.ts
-    - Create.ts
-    - Delete.ts
-    - List.ts
-    - Show.ts
-    - Update.ts
+    - create.ts
+    - destroy.ts
+    - list.ts
+    - show.ts
+    - update.ts
   - tests
     - .gitignore
   - validations
       - index.ts
-      - Create.ts
-      - Update.ts
+      - create.ts
+      - update.ts
   - **your-module-name.routes.ts**
 </FileTree>
 
@@ -131,7 +131,7 @@ Example:
 ```
 
 This creates a new file at:  
-`modules/user/controllers/Generic.ts`
+`modules/user/controllers/generic.ts`
 
 
 ### Test
@@ -190,7 +190,7 @@ You’ll be prompted to enter a factory name, typically matching the model it’
 ```
 
 This will generate a new file at:  
-`app/database/factories/User.ts`
+`app/database/factories/user.factory.ts`
 
 The generated file comes with a base structure like this:
 
@@ -198,7 +198,7 @@ The generated file comes with a base structure like this:
 import { Factory } from "app/helpers/Factory";
 import { User } from "..";
 
-export default new Factory().define(User, (faker) => {
+const UserFactory = new Factory().define(User, (faker) => {
   return {
     /**
      * Define your model fields here using faker.js.
@@ -208,6 +208,8 @@ export default new Factory().define(User, (faker) => {
      */
   };
 });
+
+export { UserFactory }
 ```
 
 Factories include five core methods:
@@ -221,7 +223,7 @@ Factories include five core methods:
 Here’s an example of how to use a factory:
 
 ```ts
-import UserFactory from "app/database/factories/User";
+import { UserFactory } from "app/database/factories/user.factory";
 
 await UserFactory.create();
 await UserFactory.createMany(2);
@@ -285,7 +287,7 @@ Then select the `Validation` option:
 This will generate a new file at:
 
 ```
-modules/user/validations/Create.ts
+modules/user/validations/create.ts
 ```
 
 With the following structure:
@@ -300,13 +302,15 @@ export const Schema = z.object({
 
 export type SchemaType = z.infer<typeof Schema>;
 
-export async function CreateValidation(data: SchemaType) {
+export async function create(data: SchemaType) {
   try {
     Schema.parse(data);
   } catch (error) {
     if (error instanceof z.ZodError || error instanceof AppError) {
       throw error;
     }
+
+    throw AppError.E_GENERIC_ERROR("Unexpected error during validation.");
   }
 }
 ```
@@ -317,8 +321,8 @@ export async function CreateValidation(data: SchemaType) {
 
 When generating a new `Module` using `bun g`, Harpia automatically creates two default validation files:
 
-- `Create.ts`
-- `Update.ts`
+- `create.ts`
+- `update.ts`
 
 These files are located in:
 
@@ -329,15 +333,13 @@ modules/[module]/validations/
 They are also automatically exported through the module’s `index.ts` file:
 
 ```ts
-import { CreateValidation } from "./Create";
-import { UpdateValidation } from "./Update";
+import { create } from "./create";
+import { update } from "./update";
 
-const UserValidator = {
-  Create: CreateValidation,
-  Update: UpdateValidation,
+export const validation = {
+  create,
+  update,
 };
-
-export default UserValidator;
 ```
 
 This structure makes it easy to reuse validation logic consistently across your controllers or services.
@@ -369,7 +371,7 @@ Use observers to:
 Each observer is defined by attaching a callback to a Prisma operation on a specific model:
 
 ```ts
-// app/observers/UserCreate.observer.ts
+// app/observers/user.observer.ts
 import { Observer } from ".";
 
 Observer.model("User", "create", ({ data }) => {
