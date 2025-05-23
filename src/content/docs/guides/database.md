@@ -6,7 +6,8 @@ description: A guide in my new Starlight docs site.
 Harpia uses Prisma as its default ORM.
 
 ## File Structure
-- **Schema File**: `app/database/schema.prisma`
+- **Schema File**: `prisma/schema.prisma`
+- **Migrations**: `prisma/migrations`
 - **Prisma client abstraction**: `app/database/database.ts`
 - **Model imports**: `app/database/index.ts`
 

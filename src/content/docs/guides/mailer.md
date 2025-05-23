@@ -34,7 +34,7 @@ You can send an email like this:
 import Mailer from "app/services/mailer";
 
 await Mailer.sendMail({
-  from: '"Harpia" <noreply@harpia.dev>',
+  from: '"Harpia" <noreply@example.com>',
   to: "user@example.com",
   subject: "Hello!",
   text: "This is a test email.",
@@ -57,7 +57,7 @@ app.post("/send-email", async (req, res) => {
   const content = await html.renderTemplate("app/services/mailer/templates/account-created", { data });
 
   await Mailer.sendMail({
-    from: '"Harpia" <noreply@harpia.dev>',
+    from: '"Harpia" <noreply@example.com>',
     to: "user@example.com",
     subject: "Account Created",
     html: content,
