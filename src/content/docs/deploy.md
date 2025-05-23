@@ -11,6 +11,8 @@ bun --version
 # Should return v1.2 or higher
 ```
 
+Remember to change the value of the "ENV" into .env to "production".
+
 ## Deployment Targets
 
 ### 1. Traditional Servers (VPS/Bare Metal)
