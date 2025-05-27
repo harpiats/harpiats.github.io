@@ -3,9 +3,6 @@ title: Development Roadmap
 description: Current development progress and future plans
 ---
 
-## Current Version
-**v1.0.0-beta.8** - Beta testing phase
-
 ## Current Focus
 
 ### 1. Unit Testing Implementation

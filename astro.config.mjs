@@ -22,6 +22,7 @@ export default defineConfig({
     	LanguageSelect: './src/components/VersionBadge.astro',
 	  },
 		sidebar: [
+			{ label: 'Version', link: '/version' },
 			{
 				label: 'Guides',
 				items: [
