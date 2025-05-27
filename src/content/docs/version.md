@@ -10,7 +10,7 @@ This page lists the current and historical versions of Harpia's core and fullsta
 | Module        | Version         | Release Date   | Notes                        |
 |---------------|------------------|----------------|------------------------------|
 | Core (harpia) | `v1.0.0-beta.9`  | 2025-05-26     | Published to npm             |
-| App (fullstack) | `v0.1.0-beta.1`       | 2025-05-27     | Bun-based scaffold template  |
+| App (fullstack) | `v0.1.0-beta.2`       | 2025-05-27     | Bun-based scaffold template  |
 
 > The fullstack App version is used when scaffolding new projects via `bun create harpia-app`.
 
