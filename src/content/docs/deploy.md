@@ -152,7 +152,7 @@ networks:
 ```
 
 nginx.conf
-```conf
+```txt
 server {
     listen 80;
     server_name localhost;
@@ -202,7 +202,7 @@ All require:
 ## Configuration
 
 ### Essential Environment Variables
-```env
+```txt
 APP_ID=
 MONITOR_SECRET=
 ENV=development
