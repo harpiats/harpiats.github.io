@@ -162,13 +162,17 @@ Use the file with the choosen file extension, like `.html`, with the following s
 | Feature        | Example |
 |----------------|---------|
 | Layout         | `{{= layout('default') }}` |
-| Variables      | `{{ title }}` |
 | Block (define) | `{{= define block("body") }}` |
 | Block (use)    | `{{= block('body') }} ... {{= endblock }}` |
 | Include file   | `{{= include('welcome', { message: 'Hello' }) }}` |
 | Partial        | `{{= partial('card', { name: 'A' }) }}` |
 | Comment        | `## This is a comment` |
-| Variable define| `{{~ var title = "Homepage" }}` |
+| Variables (use)      | `{{ title }}` |
+| Variable (define) | `{{~ var title = "Homepage" }}` |
+| Plugins in Variable | `{{~ var title = uppercase("Homepage") }}` |
+| Conditionals (use)    | `{{~ if(...) }} ... {{~ else }} ... {{~ endif }}` |
+| Array For (use)    | `{{~ for num in numbers }} ... {{~ endfor }}` |
+| Object For (use)    | `{{~ for [key, value] in products }} ... {{~ endfor }}` |
 
 ---
 
@@ -200,7 +204,120 @@ Use the file with the choosen file extension, like `.html`, with the following s
 {{~ endfor }}
 ```
 
+### Using plugins in Conditionals
+You can create complex conditional logic by combining multiple plugins. This example demonstrates how to check if a user's name is "John" AND they're over 25 years old.
+
+#### Step 1: Register the Plugins
+First, register the helper plugins that will be used in the condition:
+
+```ts
+// Equality check plugin
+engine.registerPlugin("equals", (a: any, b: any) => a === b);
+
+// Numeric comparison plugin
+engine.registerPlugin("greaterThan", (a: number, b: number) => a > b);
+
+// Logical AND plugin that accepts multiple boolean arguments
+engine.registerPlugin("and", (...args: boolean[]) => args.every(Boolean));
+```
+
+#### Step 2: Prepare the Data
+Define the data that will be passed to the template:
+
+```ts
+const userData = {
+  name: "John",
+  age: 30
+};
+```
+
+#### Step 3: Create the Template
+In your template, use the plugins within a conditional statement:
+
+```html
+{{~ if (and(equals(name, 'John'), greaterThan(age, 25))) }}
+  <p>Hello John, over 25</p>
+{{~ else }}
+  <p>Hello stranger</p>
+{{~ endif }}
+```
+
+Expected Output
+
+```html
+<p>Hello John, over 25</p>
+```
+
+#### How It Works
+- Innermost plugins execute first:
+  - `equals(name, 'John')` checks if the name equals "John" → returns `true`
+  - `greaterThan(age, 25)` checks if age is greater than 25 → returns `true`
+- The `and` plugin combines results:
+  - `and(true, true)` evaluates to `true`
+- The conditional renders the appropriate block:
+  - Since the condition is `true`, the first block is rendered
+
+This approach allows you to build complex conditional logic by combining simple, reusable plugins. You can nest plugins as deeply as needed to create sophisticated conditions while keeping your templates readable and maintainable.
+
 ---
+
+### Using plugins in Loops
+This example demonstrates how to iterate through an array and use plugins within the loop to apply conditional formatting. We'll process a list of numbers and classify them as even or odd.
+
+#### Step 1: Register the Plugin
+First, register the helper plugin that checks if a number is even:
+```ts
+engine.registerPlugin("isEven", (number: number) => {
+  const num = Number(number);
+  return num % 2 === 0;
+});
+```
+
+#### Step 2: Prepare the Data
+Define the array of numbers that will be processed:
+
+```ts
+const data = {
+  numbers: [1, 2, 3, 4]
+};
+```
+
+#### Step 3: Create the Template
+In your template, use a loop with the plugin to conditionally format each number:
+
+```html
+{{~ for num in numbers }}
+  {{~ if (isEven(num)) }}
+    <div class="even">{{ num }}</div>
+  {{~ else }}
+    <div class="odd">{{ num }}</div>
+  {{~ endif }}
+{{~ endfor }}
+```
+
+**Expected Output:**
+```html
+<div class="odd">1</div>
+<div class="even">2</div>
+<div class="odd">3</div>
+<div class="even">4</div>
+```
+
+**How It Works**
+- Loop Iteration:
+  - The `for` loop iterates through each number in the `numbers` array
+  - For each iteration, the current number is available as `num`
+- Plugin Execution:
+  - Inside the loop, `isEven(num)` is called for each number
+  - The plugin returns `true` for even numbers (2, 4) and `false` for odd numbers (1, 3)
+- Conditional Rendering:
+  - When `isEven(num)` returns `true`, the `<div class="even">` block is rendered
+  - When `isEven(num)` returns `false`, the `<div class="odd">` block is rendered
+- Final Output:
+  - The loop generates a separate `<div>` for each number in the array
+  - Each `<div>` gets the appropriate CSS class based on the number's parity
+
+This pattern demonstrates how you can combine loops and plugins to create dynamic content with conditional formatting. The same approach can be used for more complex scenarios like filtering, transforming, or categorizing data during iteration.
 
 ## Plugins
 
