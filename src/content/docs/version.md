@@ -9,8 +9,8 @@ This page lists the current and historical versions of Harpia's core and fullsta
 
 | Module        | Version         | Release Date   | Notes                        |
 |---------------|------------------|----------------|------------------------------|
-| Core (harpia) | `v1.0.0-beta.10`  | 2025-08-05     | Fix template engine plugin execution and published to npm |
-| App (fullstack) | `v0.1.0-beta.6`       | 2025-08-21     | Fix seed generator and omit methods in ObjectUtility |
+| Core (harpia) | `v1.0.0-beta.11`  | 2025-09-02     | Switch license from MIT to Apache 2.0 |
+| App (fullstack) | `v0.1.0-beta.7`       | 2025-08-21     | Improve Factory class and add TestCleaner |
 
 > The fullstack App version is used when scaffolding new projects via `bun create harpia-app`.
 

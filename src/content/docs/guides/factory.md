@@ -101,6 +101,30 @@ export async function run() {
 
 ---
 
+### Attribute Selection (`pick` and `get`)
+
+The Factory provides `pick` and `get` methods to select specific attributes from objects or arrays, either from created records or stubbed data.
+
+```ts
+// Select single or multiple attributes from a created record
+const userName = await user.pick("name");
+const userInfo = await user.pick(["name", "email"]);
+
+// Get attribute values directly
+const emails = await user.get("email");
+const values = await user.get(["name", "role"]);
+
+// Works on multiple records
+const users = await UserFactory.createMany(5);
+const names = await users.pick("name");       // Array of objects with only the name
+const emailValues = await users.get("email"); // Array of emails
+```
+
+* `pick(keys)` returns **an object or array of objects** containing only the selected keys.
+* `get(keys)` returns **the values** of the selected keys directly.
+
+---
+
 ### API
 
 | Method              | Description |
@@ -111,5 +135,8 @@ export async function run() {
 | `.createMany(count)`         | Create and return multiple records. |
 | `.makeStubbed()`             | Return one fake object (not persisted). |
 | `.makeStubbedMany(count)`    | Return multiple fake objects. |
+| `.pick(keys)` | Select specific attributes from a record or array of records. |
+| `.get(keys)` | Get the values of specific attributes from a record or array of records. |
+	
 
 > Each call to `create()` or `makeStubbed()` resets the merge state, ensuring isolation between uses.

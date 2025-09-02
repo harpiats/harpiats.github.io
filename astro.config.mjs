@@ -36,6 +36,7 @@ export default defineConfig({
 					{ label: 'Seeding', slug: 'guides/seeding' },
 					{ label: 'Factory', slug: 'guides/factory' },
 					{ label: 'Tests', slug: 'guides/test' },
+					{ label: 'Test Cleaner', slug: 'guides/test-cleaner' },
 					{ label: 'Observers', slug: 'guides/observers' },
 					{ label: 'Mailer', slug: 'guides/mailer' },
 					{ label: 'Tasks and Jobs', slug: 'guides/tasks-and-jobs' },
