@@ -7,10 +7,10 @@ description: Track the version history of the Harpia Framework modules, includin
 
 This page lists the current and historical versions of Harpia's core and fullstack modules. Each version includes the release date for reference.
 
-| Module        | Version         | Release Date   | Notes                        |
-|---------------|------------------|----------------|------------------------------|
-| Core (harpia) | `v1.0.0-beta.11`  | 2025-09-02     | Switch license from MIT to Apache 2.0 |
-| App (fullstack) | `v0.1.0-beta.7`       | 2025-08-21     | Improve Factory class and add TestCleaner |
+| Module          | Version           | Release Date   | Notes                                                          |
+|-----------------|-------------------|----------------|----------------------------------------------------------------|
+| Core (harpia)   | `v1.0.0-beta.13`  | 2025-10-25     | Add websocket routes to router and refactor template engine    |
+| App (fullstack) | `v0.1.0-beta.8`   | 2025-10-25     | Refactor scaffolding templates with Template Engine new syntax |
 
 > The fullstack App version is used when scaffolding new projects via `bun create harpia-app`.
 

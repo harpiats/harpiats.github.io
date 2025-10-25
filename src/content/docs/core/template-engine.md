@@ -1,23 +1,24 @@
 ---
 title: Template Engine
-description: Harpia supports both third-party and its own built-in template engine with layouts, blocks, partials, and plugin support.
+description: Harpia supports both third-party and its own built-in template engine with layouts, blocks, components, and plugin support.
 ---
 
-Harpia supports two different template engines: the community-driven **EJS**, and its own native **HTML-based engine** built specifically for modular apps.
+# Template Engine
+
+Harpia offers flexible template rendering with support for both **third-party engines** (like EJS) and its own **high-performance native engine** designed for modern web applications.
 
 ---
 
-## Third-party Template Engine
+## Third-Party Template Engine
 
-You can use any third-party engine like EJS. Here's how:
+### Using EJS
 
-### 1. Create an engine configuration
+#### 1. Create Engine Configuration
 
-```ts
-// src/ejs.ts
+```typescript
 import ejs from "ejs";
 import path from "node:path";
-import type { Harpia } from "harpiats";
+import type { Harpia } from "harpia";
 
 export const ejsEngine = {
   configure: (app: Harpia) => {
@@ -30,35 +31,42 @@ export const ejsEngine = {
 };
 ```
 
-### 2. Set up your application
+#### 2. Configure Application
 
-```ts
-import harpia from "harpiats";
-import { ejsEngine } from "./ejs";
+```typescript
+import harpia from "harpia";
+import { ejsEngine } from "./config/ejs";
 
 const app = harpia();
 
 ejsEngine.configure(app);
 
 app.get("/books", async (req, res) => {
-  await res.render("home", { title: "Books" });
+  await res.render("home", { title: "Books", books: [] });
 });
+
+app.listen...
 ```
 
-### 3. Sample EJS template
+#### 3. EJS Template Example
 
 `src/views/home.ejs`:
-
 ```html
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
-  </head>
-  <body>
-    <h1>Hello World!</h1>
-  </body>
+</head>
+<body>
+    <h1>Welcome to <%= title %></h1>
+    <ul>
+      <% books.forEach(book => { %>
+          <li><%= book.title %></li>
+      <% }); %>
+    </ul>
+</body>
 </html>
 ```
 
@@ -66,17 +74,16 @@ app.get("/books", async (req, res) => {
 
 ## Harpia Native Template Engine
 
-The built-in engine is designed for HTML templates, and supports layouts, blocks, partials, comments, conditions, loops, and plugins. It works well for monolithic and modular applications.
+The built-in engine provides a clean, HTML-based syntax with support for layouts, blocks, components, and plugins.
 
----
+### Configuration
 
-### Configuration (non-module structure)
+#### Standard Structure (Non-Modular)
 
-Create `template-engine.ts`:
-
-```ts
+```typescript
+// src/config/template-engine.ts
 import path from "node:path";
-import { TemplateEngine } from "harpiats/template-engine";
+import { TemplateEngine } from "harpia/template-engine";
 
 const baseDir = process.cwd();
 
@@ -85,269 +92,299 @@ export const engine = new TemplateEngine({
   useModules: false,
   fileExtension: ".html", // The default is `.html`, but you can use `.txt`, `.hml`, or any other.
   path: {
-    views: path.join(baseDir, "src", "resources", "pages"),
-    layouts: path.join(baseDir, "src", "resources", "layouts"),
-    partials: path.join(baseDir, "src", "resources", "partials"),
+    views: path.join(baseDir, "src", "views"),
+    layouts: path.join(baseDir, "src", "layouts"), // optional
+    components: path.join(baseDir, "src", "components"), // optional
   },
 });
+
+// Register custom plugins
+engine.registerPlugin("uppercase", (str: string) => str.toUpperCase());
+engine.registerPlugin("formatDate", (date: Date) => date.toLocaleDateString());
+engine.registerPlugin("currency", (value: number) => `$${value.toFixed(2)}`);
 ```
 
-Use it in your application:
-
-```ts
-import harpia from "harpiats";
-import { engine } from "src/template-engine";
+```typescript
+import harpia from "harpia";
+import { engine } from "./config/template-engine";
 
 const app = harpia();
 engine.configure(app);
 
-app.get("/books", async (req, res) => {
-  await res.render("home", { title: "Books" });
+app.get("/products", async (req, res) => {
+  await res.render("products", {
+    title: "Our Products",
+    products: [
+      { name: "Product A", price: 29.99 },
+      { name: "Product B", price: 39.99 }
+    ]
+  });
 });
 ```
 
----
-
-### Configuration (module structure)
+#### Modular Structure
 
 If using modular routing, set `useModules: true`:
 
-```ts
+```typescript
+// src/config/template-engine.ts
 import path from "node:path";
-import { TemplateEngine } from "harpiats/template-engine";
-
-const baseDir = process.cwd();
+import { TemplateEngine } from "harpia/template-engine";
 
 export const engine = new TemplateEngine({
   viewName: "page",
   useModules: true,
-  fileExtension: ".html", // The default is `.html`, but you can use `.txt`, `.hml`, or any other.
+  fileExtension: ".html",
   path: {
-    views: path.join(baseDir, "modules", "**", "pages"),
-    layouts: path.join(baseDir, "resources", "layouts"),
-    partials: path.join(baseDir, "resources", "partials"),
+    views: path.join(process.cwd(), "modules", "**", "pages"),
+    layouts: path.join(process.cwd(), "resources", "layouts"),
+    components: path.join(process.cwd(), "resources", "components"),
   },
 });
 ```
 
-Then:
-
-```ts
-app.get("/books", async (req, res) => {
-  await res.module("books").render("home", { title: "Books" });
+```typescript
+app.get("/users", async (req, res) => {
+  await res.module("users").render("profile", { 
+    user: { name: "John", email: "john@example.com" }
+  });
 });
 ```
 
-> ℹ️ Learn more about how modules work in Harpia in the [Modules Guide](/guides/modules).
+### Manual Template Rendering
 
----
+Render templates anywhere in your application:
 
-### Rendering templates by path
+```typescript
+app.get("/", async (req, res) => {
+  const content = await html.generate(
+    "app/services/mailer/templates/account-created",
+    { data }
+  );
 
-You can also render templates manually:
-
-```ts
-const content = await html.renderTemplate(
-  "app/services/mailer/templates/account-created",
-  { data }
-);
+  return res.html(content);
+});
 ```
 
 ---
 
-## Template Syntax
+## Template Syntax Reference
 
-Use the file with the choosen file extension, like `.html`, with the following syntax:
+### Variables & Output
+```html
+<h1>{{ title }}</h1>
+<p>Welcome, {{ user.name }}!</p>
+<p>Price: {{ currency(product.price) }}</p>
+```
 
-| Feature        | Example |
-|----------------|---------|
-| Layout         | `{{= layout('default') }}` |
-| Block (define) | `{{= define block("body") }}` |
-| Block (use)    | `{{= block('body') }} ... {{= endblock }}` |
-| Include file   | `{{= include('welcome', { message: 'Hello' }) }}` |
-| Partial        | `{{= partial('card', { name: 'A' }) }}` |
-| Comment        | `## This is a comment` |
-| Variables (use)      | `{{ title }}` |
-| Variable (define) | `{{~ var title = "Homepage" }}` |
-| Plugins in Variable | `{{~ var title = uppercase("Homepage") }}` |
-| Conditionals (use)    | `{{~ if(...) }} ... {{~ else }} ... {{~ endif }}` |
-| Array For (use)    | `{{~ for num in numbers }} ... {{~ endfor }}` |
-| Object For (use)    | `{{~ for [key, value] in products }} ... {{~ endfor }}` |
-
----
+### Local Variables
+```html
+@set welcomeMessage = "Hello, World!" @endset
+<p>{{ welcomeMessage }}</p>
+```
 
 ### Conditionals
-
 ```html
-{{~ if(isActive) }} <p>User is active.</p> {{~ endif }}
+@if user.isAdmin
+  <div class="admin-panel">
+    <button>Edit</button>
+    <button>Delete</button>
+  </div>
+@elseif user.isEditor
+  <button>Edit</button>
+@else
+  <p>Regular user</p>
+@endif
+```
 
-{{~ if(isActive) }}
-  <p>User is active.</p>
-{{~ else }}
-  <p>User is not active.</p>
-{{~ endif }}
+### Loops
+```html
+<!-- Array iteration -->
+@for product in products
+  <div class="product">
+    <h3>{{ product.name }}</h3>
+    <p>Price: {{ currency(product.price) }}</p>
+  </div>
+@endfor
 
-<p>{{ isActive ? 'Active' : 'Inactive' }}</p>
+<!-- Object iteration -->
+@for [key, value] in settings
+  <div class="setting">
+    <span class="key">{{ key }}:</span>
+    <span class="value">{{ value }}</span>
+  </div>
+@endfor
+```
+
+### Layout System
+
+**Layout (layouts/default.html):**
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }} - My App</title>
+</head>
+<body>
+    <header>
+        <nav>...</nav>
+    </header>
+    
+    <main>
+        @yield("content")
+    </main>
+    
+    <footer>
+        @yield("footer")
+    </footer>
+</body>
+</html>
+```
+
+**Page (views/products.html):**
+```html
+@layout("default", { title: "Products" })
+
+@block("content")
+  <h1>Our Products</h1>
+  
+  @for product in products
+    @component("product-card", product)
+  @endfor
+@endblock
+
+@block("footer")
+  <p>Contact us for more information!</p>
+@endblock
+```
+
+### Components
+
+**Component (components/product-card.html):**
+```html
+<div class="card">
+  <h3>{{ name }}</h3>
+  <p class="price">{{ currency(price) }}</p>
+  <button>Add to Cart</button>
+</div>
+```
+
+**Usage:**
+```html
+@component("product-card", { 
+  name: "Premium Widget", 
+  price: 99.99 
+})
+```
+
+### Imports
+```html
+@import("shared/header", { title: "Page Title" })
+
+<div class="content">
+  <!-- page content -->
+</div>
+
+@import("shared/footer")
+```
+
+### Comments
+```html
+## This is a single-line comment
+
+##
+  This is a multi-line comment
+  that won't appear in the output
+##
 ```
 
 ---
 
-### Loops
+## Advanced Plugin Usage
 
-```html
-{{~ for num in numbers }}
-  <p>Number: {{ num }}</p>
-{{~ endfor }}
+### Complex Conditionals with Plugins
 
-{{~ for [key, value] in products }}
-  <p>{{ key }}: {{ value.name }} - ${{ value.price }}</p>
-{{~ endfor }}
-```
-
-### Using plugins in Conditionals
-You can create complex conditional logic by combining multiple plugins. This example demonstrates how to check if a user's name is "John" AND they're over 25 years old.
-
-#### Step 1: Register the Plugins
-First, register the helper plugins that will be used in the condition:
-
-```ts
-// Equality check plugin
+```typescript
+// Register plugins
 engine.registerPlugin("equals", (a: any, b: any) => a === b);
-
-// Numeric comparison plugin
 engine.registerPlugin("greaterThan", (a: number, b: number) => a > b);
-
-// Logical AND plugin that accepts multiple boolean arguments
 engine.registerPlugin("and", (...args: boolean[]) => args.every(Boolean));
 ```
 
-#### Step 2: Prepare the Data
-Define the data that will be passed to the template:
-
-```ts
-const userData = {
-  name: "John",
-  age: 30
-};
-```
-
-#### Step 3: Create the Template
-In your template, use the plugins within a conditional statement:
-
 ```html
-{{~ if (and(equals(name, 'John'), greaterThan(age, 25))) }}
-  <p>Hello John, over 25</p>
-{{~ else }}
-  <p>Hello stranger</p>
-{{~ endif }}
+@if and(equals(user.role, "admin"), greaterThan(user.experience, 2))
+  <div class="advanced-controls">
+    <button>Advanced Settings</button>
+    <button>Export Data</button>
+  </div>
+@endif
 ```
 
-Expected Output
-
+### Plugin Chains
 ```html
-<p>Hello John, over 25</p>
+<p>{{ uppercase(trim(user.name)) }}</p>
+<p>{{ currency(calculateDiscount(product.price, user.discount)) }}</p>
 ```
 
-#### How It Works
-- Innermost plugins execute first:
-  - `equals(name, 'John')` checks if the name equals "John" → returns `true`
-  - `greaterThan(age, 25)` checks if age is greater than 25 → returns `true`
-- The `and` plugin combines results:
-  - `and(true, true)` evaluates to `true`
-- The conditional renders the appropriate block:
-  - Since the condition is `true`, the first block is rendered
-
-This approach allows you to build complex conditional logic by combining simple, reusable plugins. You can nest plugins as deeply as needed to create sophisticated conditions while keeping your templates readable and maintainable.
+### Unescaped Output
+```html
+<div>
+  {{ raw(htmlContent) }}
+</div>
+```
 
 ---
 
-### Using plugins in Loops
-This example demonstrates how to iterate through an array and use plugins within the loop to apply conditional formatting. We'll process a list of numbers and classify them as even or odd.
+## File Structure Examples
 
-#### Step 1: Register the Plugin
-First, register the helper plugin that checks if a number is even:
-```ts
-engine.registerPlugin("isEven", (number: number) => {
-  const num = Number(number);
-  return num % 2 === 0;
-});
+### Standard Structure
+```
+src/
+  views/
+    home/
+      page.html
+    products/
+      page.html
+  layouts/
+    default.html
+    admin.html
+  components/
+    header.html
+    product-card.html
 ```
 
-#### Step 2: Prepare the Data
-Define the array of numbers that will be processed:
-
-```ts
-const data = {
-  numbers: [1, 2, 3, 4]
-};
+### Modular Structure
+```
+modules/
+  users/
+    pages/
+      profile/
+        page.html
+      settings/
+        page.html
+  products/
+    pages/
+      listing/
+        page.html
+      detail/
+        page.html
+resources/
+  layouts/
+    default.html
+  components/
+    navigation.html
+    footer.html
 ```
 
-#### Step 3: Create the Template
-In your template, use a loop with the plugin to conditionally format each number:
+---
 
-```html
-{{~ for num in numbers }}
-  {{~ if (isEven(num)) }}
-    <div class="even">{{ num }}</div>
-  {{~ else }}
-    <div class="odd">{{ num }}</div>
-  {{~ endif }}
-{{~ endfor }}
-```
+## Best Practices
 
-**Expected Output:**
-```html
-<div class="odd">1</div>
-<div class="even">2</div>
-<div class="odd">3</div>
-<div class="even">4</div>
-```
+1. **Use layouts** for consistent page structure
+2. **Create reusable components** for common UI elements
+3. **Register plugins** for data transformation logic
+4. **Use the modular structure** for large applications
+5. **Keep templates focused** on presentation logic
 
-**How It Works**
-- Loop Iteration:
-  - The `for` loop iterates through each number in the `numbers` array
-  - For each iteration, the current number is available as `num`
-- Plugin Execution:
-  - Inside the loop, `isEven(num)` is called for each number
-  - The plugin returns `true` for even numbers (2, 4) and `false` for odd numbers (1, 3)
-- Conditional Rendering:
-  - When `isEven(num)` returns `true`, the `<div class="even">` block is rendered
-  - When `isEven(num)` returns `false`, the `<div class="odd">` block is rendered
-- Final Output:
-  - The loop generates a separate `<div>` for each number in the array
-  - Each `<div>` gets the appropriate CSS class based on the number's parity
-
-This pattern demonstrates how you can combine loops and plugins to create dynamic content with conditional formatting. The same approach can be used for more complex scenarios like filtering, transforming, or categorizing data during iteration.
-
-## Plugins
-
-You can register helpers for use in templates:
-
-```ts
-engine.registerPlugin("uppercase", (str: string) => str.toUpperCase());
-engine.registerPlugin("exclaim", (str: string) => `${str}!`);
-engine.registerPlugin("sum", (a: number, b: number) => a + b);
-```
-
-Usage in templates:
-
-```html
-<p>{{{ uppercase(user.name) }}}</p>
-<p>{{{ sum(10, 20) }}}</p>
-<p>{{{ exclaim(uppercase(user.name)) }}}</p>
-```
-
-In the example above:
-
-- uppercase(user.name) transforms the name to uppercase.
-- exclaim(...) adds an exclamation mark.
-- The result would be something like: `<p>LUCAS!</p>`
-
-You can nest plugins as deeply as needed:
-
-```html
-<p>{{{ exclaim(uppercase(sum(5, 5))) }}}</p>
-<!-- Output: 10 -> "10" -> "10!" -->
-```
-
-Just make sure the return value of each plugin matches the input type expected by the next.
+The native Harpia template engine provides a clean, intuitive syntax while maintaining powerful features for building dynamic web applications.
