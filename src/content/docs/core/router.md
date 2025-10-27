@@ -95,6 +95,67 @@ router.get("/path", middlewares, (req: Request, res: Response) => {
 
 ---
 
+### Web Socket Routes
+Creating a websocket route
+
+```typescript
+import { Router } from "harpia";
+
+const routes = Router();
+
+// Define a custom type for WebSocket connection data
+type CustomWebSocketData = {
+  userId: string;
+  username: string;
+  sessionId: string;
+};
+
+// Create a WebSocket route for the chat
+routes.ws<CustomWebSocketData>("/chat", {
+  // Called when a new WebSocket connection is opened
+  open(ws) {
+    const data = ws.data;
+
+    console.log("New WebSocket connection opened on /chat");
+
+    // Set custom data for this connection
+    data.userId = "123";
+    data.username = "Alice";
+    data.sessionId = "abc";
+
+    ws.send(`Welcome to the chat, ${data.username}!`);
+  },
+
+  // Called when a message is received from the client
+  message(ws, message) {
+    const data = ws.data;
+    console.log(`Message received from ${data.username}: ${message}`);
+  },
+
+  // Called when the WebSocket connection is closed
+  close(ws, code, reason) {
+    const data = ws.data;
+    console.log(`Connection closed (${code}) by ${data.username}: ${reason}`);
+  },
+
+  // Called when the socket is ready to send more data
+  drain(ws) {
+    const data = ws.data;
+    console.log(`Socket for ${data.username} is ready to send data`);
+  },
+
+  // Called when an error occurs on the WebSocket connection
+  error(ws, error) {
+    const data = ws.data;
+    console.error(`Error on ${data.username}'s connection:`, error);
+  },
+});
+
+export default routes;
+```
+
+---
+
 ### Registering Routes Manually
 
 The `Router` class also provides a `register` method that allows you to programmatically add multiple routes with an optional prefix. This is especially useful when dynamically loading modules in larger applications.

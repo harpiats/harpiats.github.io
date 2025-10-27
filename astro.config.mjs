@@ -51,6 +51,7 @@ export default defineConfig({
 				items: [
 					{ label: 'Introduction', slug: 'core/introduction' },
 					{ label: 'Installation', slug: 'core/installation' },
+					{ label: 'Server', slug: 'core/server' },
 					{ label: 'Router', slug: 'core/router' },
 					{ label: 'Request', slug: 'core/request' },
 					{ label: 'Response', slug: 'core/response' },
