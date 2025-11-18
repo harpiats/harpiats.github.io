@@ -9,8 +9,8 @@ This page lists the current and historical versions of Harpia's core and fullsta
 
 | Module          | Version           | Release Date   | Notes                                                          |
 |-----------------|-------------------|----------------|----------------------------------------------------------------|
-| Core (harpia)   | `v1.0.0-beta.13`  | 2025-10-25     | Add websocket routes to router and refactor template engine    |
-| App (fullstack) | `v0.1.0-beta.8`   | 2025-10-25     | Refactor scaffolding templates with Template Engine new syntax |
+| Core (harpia)   | `v1.0.0-beta.18`  | 2025-11-16     | Add CSP Nonce to Shield and Template Engine integration.       |
+| App (fullstack) | `v0.1.0-beta.10`   | 2025-11-17    | Add hot reload and nonce support.                              |
 
 > The fullstack App version is used when scaffolding new projects via `bun create harpia-app`.
 

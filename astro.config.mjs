@@ -44,6 +44,7 @@ export default defineConfig({
 					{ label: 'S3', slug: 'guides/s3' },
 					{ label: 'Homepage', slug: 'guides/homepage' },
 					{ label: 'Authentication', slug: 'guides/authentication' },
+					{ label: 'Hot Reload', slug: 'guides/hot-reload' },
 				],
 			},
 			{
