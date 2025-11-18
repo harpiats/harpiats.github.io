@@ -7,52 +7,91 @@ The `Shield` module in Harpia provides middleware that automatically sets a wide
 
 ## Features
 
-- **Content Security Policy (CSP)** – Restricts the sources from which content can be loaded.
-- **Cross-Origin Headers** – Enforces policies like `Cross-Origin-Opener-Policy` and `Cross-Origin-Resource-Policy`.
-- **Strict Transport Security (HSTS)** – Forces the use of HTTPS connections.
-- **Referrer Policy** – Controls how much referrer information is shared.
-- **X-Headers** – Including `X-Frame-Options`, `X-Content-Type-Options`, `X-XSS-Protection`, and others.
-- **Customizable** – You can override any default value by providing options to the `Shield` constructor.
+1. Security Headers:
+    - Content Security Policy (CSP): Restricts sources for scripts, styles, and other resources.
+    - Cross-Origin Policies: Controls how resources are shared across origins.
+    - Strict Transport Security (HSTS): Enforces HTTPS connections.
+    - Referrer Policy: Controls the information sent in the Referer header.
+    - X-Content-Type-Options: Prevents MIME type sniffing.
+    - X-Frame-Options: Protects against clickjacking.
+    - X-XSS-Protection: Disables browser XSS filters (if not needed).
+    - Nonce Support: Generates cryptographic nonces for CSP inline scripts/styles.
+2. Customizable:
+    - Override default headers by passing options to the constructor.
+    - Merge custom directives with sensible defaults.
+3. Middleware:
+    - Easily integrate into your application as middleware.
+4. Template Engine Integration:
+    - Automatic nonce generation for secure inline scripts/styles.
+    - Seamless integration with the template engine.
 
 ## Basic Usage
 
 You can create and apply Shield middleware to your app in a few lines:
 
-```ts
+```typescript
 // shield.ts
 import { Shield } from "harpiats/shield";
+import type { Harpia } from "harpiats";
 
-const instance = new Shield();
+const instance = new Shield({
+  useNonce: true, // Enable nonce generation, false as default.
+});
 
-export const shield = instance.middleware;
+export const shield = {
+  middleware: (server: Harpia) => instance.middleware(server),
+  instance: instance,
+}
 ```
 
-```ts
+Apply the shield middleware in your server setup:
+
+```typescript
 // server.ts
-import { harpia } from "harpiats";
+import { harpia } from "harpia";
 import { shield } from "./shield";
 
 const app = harpia();
 
-app.use(shield());
+// Apply security headers middleware
+app.use(shield.middleware());
 
+// Your routes
 app.get("/", (req, res) => {
   res.send("Hello, World!");
 });
 
-app.listen({ port: 3000 });
+app.listen({ port: 3000 }, () => console.log("Server running on http://localhost:3000"));
 ```
+
+If you want to use the harpia template engine:
+
+```typescript
+import { harpia } from "harpia";
+import { shield } from "./shield";
+import { engine } from "./template-engine";
+
+const app = harpia();
+
+// Apply security headers middleware
+app.use(shield.middleware(app));
+
+// Setup template engine
+engine.configure(app, shield.instance);
+```
+
+> To understand more about the harpia template engine, see the [Template Engine](/core/template-engine) section.
 
 ## Custom Configuration
 
 The `Shield` constructor accepts a configuration object to override default header values:
 
-```ts
+```typescript
 const instance = new Shield({
   contentSecurityPolicy: {
     directives: {
       "default-src": ["'self'", "https://trusted.com"],
-      "script-src": ["'self'", "'unsafe-inline'"]
+      "script-src": ["'self'"]
     }
   },
   strictTransportSecurity: {
@@ -61,6 +100,11 @@ const instance = new Shield({
     preload: true
   }
 });
+
+export const shield = {
+  middleware: (server: Harpia) => instance.middleware(server),
+  instance: instance,
+};
 ```
 
 ### Default CSP Directives
@@ -78,7 +122,7 @@ If not customized, the following CSP directives are applied by default:
   "object-src": ["'none'"],
   "script-src": ["'self'"],
   "script-src-attr": ["'none'"],
-  "style-src": ["'self'", "https:", "'unsafe-inline'"],
+  "style-src": ["'self'"],
   "upgrade-insecure-requests": []
 }
 ```
@@ -99,12 +143,50 @@ If not customized, the following CSP directives are applied by default:
 | `X-DNS-Prefetch-Control`         | `off`                |
 | `X-Download-Options`             | `noopen`             |
 | `X-Frame-Options`                | `SAMEORIGIN`         |
-| `X-Permitted-Cross-Domain-Policies` | `none`           |
+| `X-Permitted-Cross-Domain-Policies` | `none`            |
 | `X-Powered-By`                   | removed              |
 | `X-XSS-Protection`               | `0` (disabled)       |
+| `useNonce`                       | `false` (disabled)   |
 
 ## Best Practices
 
 - Always review CSP settings to fit your asset sources.
 - Avoid `"unsafe-inline"` unless absolutely necessary.
 - Use `preload` with HSTS only after confirming HTTPS readiness across your subdomains.
+
+### Use nonce in templates:
+```html
+<!-- Use @set to define a variable to hold the nonce value -->
+@set nonce = generateNonce() @endset
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Secure Page</title>
+  </head>
+  <body>
+    <h1>Hello, {{ name }}!</h1>
+    
+    <!-- Secure inline script with nonce -->
+    <script nonce="{{ nonce }}">
+      console.log("This script is CSP-compliant");
+    </script>
+    
+    <!-- Secure inline styles with nonce -->
+    <style nonce="{{ nonce }}">
+      body { color: blue; }
+    </style>
+  </body>
+</html>
+```
+
+> `generateNonce()` is a Template Engine Plugin. You can see more about the plugins in [Template Engine](/core/template-engine) section.
+
+### Important Notes
+
+- **Nonce Security**: Each nonce is unique per request and automatically invalidated after use. Since the `generateNonce()` plugin generates a new value on each call, you should cache it using `@set` if you need to use it in multiple places.
+- **CSP Compliance**: Use @set nonce = generateNonce() @endset to cache the nonce value in templates.
+- **Development**: Consider adding 'unsafe-inline' for easier development with hot reload.
+- **Production**: Remove unsafe directives and rely exclusively on nonces for inline content.
+
+The Shield module provides enterprise-grade security headers with zero configuration while remaining fully customizable for your specific needs.

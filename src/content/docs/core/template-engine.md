@@ -122,6 +122,30 @@ app.get("/products", async (req, res) => {
 });
 ```
 
+If you want to use the [Security Header Protection](/core/shield):
+
+```typescript
+import { harpia } from "harpia";
+import { shield } from "./shield";
+import { engine } from "./template-engine";
+
+const app = harpia();
+
+// Apply security headers middleware
+app.use(shield.middleware(app));
+
+// Setup template engine
+engine.configure(app, shield.instance);
+
+// Routes
+app.get("/books", async (req, res) => {
+  await res.render("home", { title: "Books" });
+});
+
+app.listen...
+```
+
+
 #### Modular Structure
 
 If using modular routing, set `useModules: true`:
@@ -157,7 +181,7 @@ Render templates anywhere in your application:
 
 ```typescript
 app.get("/", async (req, res) => {
-  const content = await html.generate(
+  const content = await engine.generate(
     "app/services/mailer/templates/account-created",
     { data }
   );
@@ -333,6 +357,23 @@ engine.registerPlugin("and", (...args: boolean[]) => args.every(Boolean));
   {{ raw(htmlContent) }}
 </div>
 ```
+
+### Nonce Value
+When using the Shield module for security headers, the template engine automatically registers a `generateNonce` plugin. This plugin generates a unique nonce for each request, which you can use to secure inline scripts and styles for Content Security Policy (CSP).
+
+```html
+@set nonce = generateNonce() @endset
+
+<script nonce="{{ nonce }}">
+  console.log("This script is CSP-compliant. Count: 1");
+</script>
+
+<script nonce="{{ nonce }}">
+  console.log("This script is CSP-compliant. Count: 2");
+</script>
+```
+
+> The `generateNonce` plugin is only available when the Shield instance is passed to the engine.configure method. See the [Shield](/core/shield) section for setup instructions.
 
 ---
 
