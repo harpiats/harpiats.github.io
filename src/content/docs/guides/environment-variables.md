@@ -5,7 +5,7 @@ description: A guide in my new Starlight docs site.
 
 The `.env` file contains environment-specific configurations. Below is an example of the required environment variables:
 
-```env
+```txt
 # Application
 APP_ID=
 MONITOR_SECRET=

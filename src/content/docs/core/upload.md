@@ -1,6 +1,6 @@
 ---
 title: Upload
-description: A guide in my new Starlight docs site.
+description: Learn how to upload files.
 ---
 
 The **Upload** module provides secure file upload handling with configurable validation for both single and multiple file uploads.

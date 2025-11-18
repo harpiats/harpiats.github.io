@@ -1,6 +1,6 @@
 ---
 title: Observers
-description: A guide in my new Starlight docs site.
+description: A guide about the model observer.
 ---
 
 Model observers in Harpia let you hook into Prisma operations—such as creating, updating, or deleting records—and run custom logic when those actions occur.

@@ -1,6 +1,6 @@
 ---
 title: Test
-description: A guide in my new Starlight docs site.
+description: A guide about the harpia framework tests.
 ---
 
 Harpia provides a convenient way to scaffold ready-to-use test files for specific features or routes using the `bun g` command.

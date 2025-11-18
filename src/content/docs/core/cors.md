@@ -1,6 +1,6 @@
 ---
 title: CORS
-description: A guide in my new Starlight docs site.
+description: A guide about the cors.
 ---
 
 Harpia provides a flexible way to configure Cross-Origin Resource Sharing (CORS), allowing you to control which origins, methods, and headers are permitted in cross-origin HTTP requests.

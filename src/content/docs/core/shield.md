@@ -1,6 +1,6 @@
 ---
 title: Shield - Security Headers
-description: A guide in my new Starlight docs site.
+description: A guide about the security headers.
 ---
 
 The `Shield` module in Harpia provides middleware that automatically sets a wide range of HTTP security headers, helping to safeguard your application against common vulnerabilities such as XSS, clickjacking, and content sniffing.

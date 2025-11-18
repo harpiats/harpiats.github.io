@@ -1,6 +1,6 @@
 ---
 title: Introduction
-description: A guide in my new Starlight docs site.
+description: Introduction about the Harpia Framework Core Module.
 lastUpdated: 2025-04-21
 ---
 

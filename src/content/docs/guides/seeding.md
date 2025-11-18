@@ -1,6 +1,6 @@
 ---
 title: Seeding
-description: A guide in my new Starlight docs site.
+description: A guide about the seeding database.
 ---
 
 Harpia provides a powerful seeding system to populate your database with initial data for development and testing.

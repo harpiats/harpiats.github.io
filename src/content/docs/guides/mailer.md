@@ -1,6 +1,6 @@
 ---
 title: Mailer
-description: A guide in my new Starlight docs site.
+description: A guide about the mailer feature of harpia framework.
 ---
 
 The Harpia Framework provides a simple Mailer class to handle email sending using `Nodemailer`. It's just a lightweight wrapper to centralize the transport configuration and make sending emails easier.

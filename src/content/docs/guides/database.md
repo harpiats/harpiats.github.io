@@ -1,6 +1,6 @@
 ---
 title: Database
-description: A guide in my new Starlight docs site.
+description: A guide of database structure in harpia framework.
 ---
 
 Harpia uses Prisma as its default ORM.

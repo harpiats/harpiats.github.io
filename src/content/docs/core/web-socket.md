@@ -1,6 +1,6 @@
 ---
 title: WebSocket
-description: A guide in my new Starlight docs site.
+description: A guide about websocket routes.
 ---
 
 You can define a route and a custom data for each WebSocket connection and implement handlers for events like connection opening, message reception, connection closing, and errors.

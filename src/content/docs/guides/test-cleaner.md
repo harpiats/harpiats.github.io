@@ -1,6 +1,6 @@
 ---
 title: Test Cleaner
-description: A guide in my new Starlight docs site.
+description: A guide about the test cleaner utility class.
 ---
 
 ### TestCleaner

@@ -1,6 +1,6 @@
 ---
 title: Tasks and Jobs
-description: A guide in my new Starlight docs site.
+description: A guide about cron jobs and scheduled tasks.
 ---
 
 Harpia allows you to run background tasks and schedule recurring jobs using the `cron` library. These tasks live in the `app/tasks` directory and can be created quickly using the scaffold command:

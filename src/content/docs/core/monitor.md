@@ -1,6 +1,6 @@
 ---
 title: Monitor
-description: A guide in my new Starlight docs site.
+description: A guide about the request monitor.
 ---
 
 The **Request Monitor** is a powerful tool for tracking and analyzing request metrics, including visitor data, traffic sources, response times, and errors. It helps monitor application performance and user behavior.

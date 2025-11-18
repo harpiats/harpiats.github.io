@@ -1,6 +1,6 @@
 ---
 title: Test Client
-description: A guide in my new Starlight docs site.
+description: A guide about the test client utility class.
 ---
 
 The **Test Client** is a comprehensive testing utility designed to simplify HTTP request testing in your application. It supports all standard HTTP methods, various request body formats, headers, query parameters, and file uploads.

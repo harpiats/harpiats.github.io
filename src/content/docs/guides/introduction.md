@@ -1,6 +1,6 @@
 ---
 title: Introduction
-description: A guide in my new Starlight docs site.
+description: Introduction about harpia framework.
 ---
 
 Harpia is an opinionated framework designed specifically for the Bun runtime environment. It provides a modern, full-featured solution for building robust and scalable web applications with simplicity and high performance in mind.

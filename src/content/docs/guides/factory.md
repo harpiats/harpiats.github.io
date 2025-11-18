@@ -1,6 +1,6 @@
 ---
 title: Factory
-description: Create a new Factory
+description: A guide about the factory helper.
 ---
 
 The `Factory` helps you generate fake data and seed your database for testing or development purposes. It uses [`@faker-js/faker`](https://github.com/faker-js/faker) and provides a fluent API for creating real or stubbed model data.
