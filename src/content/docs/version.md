@@ -10,7 +10,7 @@ This page lists the current and historical versions of Harpia's core and fullsta
 | Module          | Version           | Release Date   | Notes                                                          |
 |-----------------|-------------------|----------------|----------------------------------------------------------------|
 | Core (harpia)   | `v1.0.0-beta.19`  | 2025-11-19     | Removes the mandatory minification from the render method and allows chaining. |
-| App (fullstack) | `v0.1.0-beta.11`  | 2025-11-19     | Fix scaffolding commands.                                      |
+| App (fullstack) | `v0.1.0-beta.12`  | 2025-12-22     | Upgrade prisma version and fix integration.                    |
 
 > The fullstack App version is used when scaffolding new projects via `bun create harpia-app`.
 
